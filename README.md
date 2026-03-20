@@ -292,8 +292,8 @@ Located in `main.py` lines 20-30:
 
 ```python
 BASE_MODEL_NAME = "distilbert-base-uncased"  # Base transformer model
-ESSAYS_FILE = "data/EssayAnalysisData.xlsx"  # Input file path
-OUTPUT_FILE = "data/IG_Results.xlsx"         # Output file path
+ESSAYS_FILE = "data/production/EssayAnalysisData.xlsx"  # Input file path
+OUTPUT_FILE = "data/results/IG_Results.xlsx"  # Output file path
 SECTIONS = ['Hypothesis', 'Argument', 'Counter_Argument', 'Conclusion']
 AXIS_NAMES = ["Valence_Tone", "Stance", "Moral_Load", "Intensity_Urgency", "Certainty_Hedging"]
 ```

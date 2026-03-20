@@ -40,6 +40,7 @@ ESSAY_AXIS_NAMES = [
 
 MAX_LENGTH = 2048
 
+
 # ============================================================================
 # MODEL ARCHITECTURES
 # ============================================================================
@@ -72,6 +73,7 @@ class EssayLevelModel(nn.Module):
         logits = self.regressor(cls_output)
         scores = torch.sigmoid(logits)
         return scores
+
 
 # ============================================================================
 # LOAD DATA
@@ -129,6 +131,7 @@ with torch.no_grad():
 print("   ✓ Models loaded successfully")
 print(f"   ✓ Section-Level: {len(SECTION_AXIS_NAMES)} axes ({', '.join(SECTION_AXIS_NAMES)})")
 print(f"   ✓ Essay-Level: {len(ESSAY_AXIS_NAMES)} axes ({', '.join(ESSAY_AXIS_NAMES)})\n")
+
 
 # ============================================================================
 # HELPER FUNCTIONS
@@ -204,6 +207,7 @@ def summarize_attributions(tokens, attr_scores, top_k=10):
     sorted_attrs = sorted(filtered, key=lambda x: abs(x[1]), reverse=True)
     return sorted_attrs[:top_k]
 
+
 # ============================================================================
 # ANALYZE SECTION-LEVEL
 # ============================================================================
@@ -247,7 +251,7 @@ for section in SECTIONS:
 
         print(f"   Top 5 tokens:")
         print(f"      {'Token':<20} {'Attribution':>12}")
-        print(f"      {'-'*20} {'-'*12}")
+        print(f"      {'-' * 20} {'-' * 12}")
         for token, score in top_contributors[:5]:
             print(f"      {token:<20} {score:>12.6f}")
 
@@ -300,7 +304,7 @@ for axis_idx, axis_name in enumerate(ESSAY_AXIS_NAMES):
 
     print(f"\n   Top 10 tokens for {axis_name}:")
     print(f"      {'Token':<20} {'Attribution':>12}")
-    print(f"      {'-'*20} {'-'*12}")
+    print(f"      {'-' * 20} {'-' * 12}")
     for token, score in top_contributors[:10]:
         print(f"      {token:<20} {score:>12.6f}")
 
@@ -328,7 +332,6 @@ all_results = section_results + essay_results
 results_df = pd.DataFrame(all_results)
 
 with pd.ExcelWriter(OUTPUT_FILE, engine='openpyxl') as writer:
-
     results_df.to_excel(writer, sheet_name='Token_Attributions', index=False)
 
     summary_df = results_df.groupby(['Layer', 'Section', 'Axis']).agg({
@@ -345,7 +348,7 @@ with pd.ExcelWriter(OUTPUT_FILE, engine='openpyxl') as writer:
                 (results_df['Layer'] == 'Section') &
                 (results_df['Section'] == section) &
                 (results_df['Axis'] == axis)
-            ]
+                ]
             if len(data) > 0:
                 top = data.nlargest(10, 'Attribution_Score')[
                     ['Layer', 'Section', 'Axis', 'Token', 'Attribution_Score', 'Predicted_Score']
@@ -356,7 +359,7 @@ with pd.ExcelWriter(OUTPUT_FILE, engine='openpyxl') as writer:
         data = results_df[
             (results_df['Layer'] == 'Essay') &
             (results_df['Axis'] == axis)
-        ]
+            ]
         if len(data) > 0:
             top = data.nlargest(15, 'Attribution_Score')[
                 ['Layer', 'Section', 'Axis', 'Token', 'Attribution_Score', 'Predicted_Score']
@@ -372,7 +375,7 @@ with pd.ExcelWriter(OUTPUT_FILE, engine='openpyxl') as writer:
         data = results_df[
             (results_df['Layer'] == 'Section') &
             (results_df['Section'] == section)
-        ]
+            ]
         if len(data) > 0:
             row = {
                 'Essay_ID': essay_id,
@@ -413,7 +416,7 @@ print(f"""
    - Section-Level Analysis: {len(SECTIONS)} sections × {len(SECTION_AXIS_NAMES)} axes = {len(SECTIONS) * len(SECTION_AXIS_NAMES)} IG runs
    - Essay-Level Analysis: {len(ESSAY_AXIS_NAMES)} axes = {len(ESSAY_AXIS_NAMES)} IG runs
    - Total IG Calculations: {len(SECTIONS) * len(SECTION_AXIS_NAMES) + len(ESSAY_AXIS_NAMES)}
-   
+
 ⚠️  Note: Models using random weights for demonstration.
    When trained models are ready, load with:
    section_model.load_state_dict(torch.load('models/section_model.pth'))
